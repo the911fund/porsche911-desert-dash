@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Primary Meta Tags -->
+    <title>🏁 Play Porsche 911 Desert Dash - Racing Game</title>
+    <meta name="title" content="🏁 Play Porsche 911 Desert Dash - Racing Game">
+    <meta name="description" content="Drive your Porsche 911 through the desert! Avoid obstacles, collect fuel, compete for high scores. Touch controls for mobile, keyboard for desktop.">
+    <meta name="keywords" content="play porsche game, racing gameplay, desert driving, mobile racing, HTML5 racing">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.com/game.html">
+    <meta property="og:title" content="🏁 Play Porsche 911 Desert Dash - Racing Game">
+    <meta property="og:description" content="Drive your Porsche 911 through the desert! Avoid obstacles, collect fuel, compete for high scores.">
+    <meta property="og:image" content="https://your-domain.com/apple-touch-icon.png">
+    <meta property="og:image:width" content="180">
+    <meta property="og:image:height" content="180">
+    <meta property="og:image:type" content="image/png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-domain.com/game.html">
+    <meta property="twitter:title" content="🏁 Play Porsche 911 Desert Dash - Racing Game">
+    <meta property="twitter:description" content="Drive your Porsche 911 through the desert! Avoid obstacles, collect fuel, compete for high scores.">
+    <meta property="twitter:image" content="https://your-domain.com/apple-touch-icon.png">
+    
+    <!-- Favicons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Desert Dash">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(180deg, #FF6B35 0%, #F7931E 25%, #FFE15D 50%, #DEB887 75%, #8B7355 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            animation: backgroundShimmer 15s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.1); }
+        }
+        
+        #gameContainer {
+            background: linear-gradient(180deg, #87CEEB 0%, #FFB366 30%, #DEB887 100%);
+            border: 4px solid #8B4513;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 90vw;
+            max-height: 85vh;
+            margin: 10px auto;
+        }
+        
+        #gameCanvas {
+            display: block;
+            border-radius: 11px;
+            width: 100%;
+            height: auto;
+            max-width: 800px;
+            max-height: 600px;
+        }
+        
+        #gameUI {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: clamp(10px, 2.5vw, 14px);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.8);
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #FF6B35;
+            max-width: 140px;
+            line-height: 1.2;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: #FFFFFF;
+            font-size: clamp(9px, 2vw, 11px);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.8);
+            padding: 4px 6px;
+            border-radius: 4px;
+            max-width: 120px;
+            text-align: right;
+            line-height: 1.1;
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #FF6B35;
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 3px 3px 6px rgba(0,0,0,0.5); }
+            50% { text-shadow: 3px 3px 6px rgba(255,107,53,0.8), 0 0 20px rgba(255,107,53,0.4); }
+        }
+        
+        #homeButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: linear-gradient(45deg, #FF6B35, #FF8C42);
+            border: none;
+            color: white;
+            font-size: clamp(10px, 2.5vw, 12px);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(255, 107, 53, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1000;
+        }
+        
+        #homeButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.6);
+            background: linear-gradient(45deg, #FF8C42, #FFB366);
+        }
+        
+        #homeButton:active {
+            transform: translateY(0px);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .title {
+                font-size: clamp(18px, 4vw, 24px);
+                margin-bottom: 10px;
+            }
+            
+            #gameContainer {
+                max-width: 95vw;
+                max-height: 90vh;
+            }
+            
+            #gameUI {
+                font-size: clamp(9px, 2vw, 12px);
+                padding: 4px 6px;
+                max-width: 110px;
+            }
+            
+            #controls {
+                font-size: clamp(8px, 1.8vw, 10px);
+                padding: 3px 5px;
+                max-width: 100px;
+            }
+            
+            #homeButton {
+                font-size: clamp(9px, 2vw, 11px);
+                padding: 5px 8px;
+                top: 3px;
+                right: 3px;
+            }
+            
+            .fuel-bar {
+                width: 70px;
+                height: 6px;
+                margin-top: 1px;
+            }
+        }
+        
+        .fuel-bar {
+            width: 80px;
+            height: 8px;
+            background: rgba(51, 51, 51, 0.9);
+            border: 1px solid #FFFFFF;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        
+        .fuel-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #44ff44);
+            transition: width 0.3s ease;
+            opacity: 1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="title">🏎️ PORSCHE 911 DESERT DASH 🏜️</div>
+        <div id="gameContainer">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="gameUI">
+                <div>SPEED: <span id="speed">0</span> MPH</div>
+                <div>SCORE: <span id="score">0</span></div>
+                <div>TIME: <span id="time">0</span>s</div>
+                <div>FUEL: <span id="fuel">100</span>%
+                    <div class="fuel-bar">
+                        <div class="fuel-fill" id="fuelBar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="controls">
+                🏎️ SWIPE/ARROWS<br>
+                ⛽ Fuel pickups<br>
+                💰 Bonus coins<br>
+                🏠 HOME button
+            </div>
+            <button id="homeButton" onclick="goToHomepage()">
+                🏠 HOME
+            </button>
+            <button id="leaderboardButton" onclick="showLeaderboard()" style="
+                position: absolute;
+                top: 5px;
+                right: 85px;
+                background: linear-gradient(45deg, #FFD700, #FFA500);
+                border: none;
+                color: #333;
+                font-size: clamp(10px, 2.5vw, 12px);
+                font-weight: bold;
+                font-family: 'Courier New', monospace;
+                padding: 6px 10px;
+                border-radius: 6px;
+                cursor: pointer;
+                box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+                z-index: 1000;
+            ">
+                🏆 TOP 10
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Mobile scaling setup
+        function scaleCanvas() {
+            // Calculate scale to fit screen better on mobile
+            const isMobile = window.innerWidth <= 768;
+            const maxWidth = isMobile ? window.innerWidth * 0.95 : Math.min(window.innerWidth * 0.9, 800);
+            const maxHeight = isMobile ? window.innerHeight * 0.80 : Math.min(window.innerHeight * 0.85, 600);
+            
+            const scaleX = maxWidth / 800;
+            const scaleY = maxHeight / 600;
+            const scale = Math.min(scaleX, scaleY);
+            
+            canvas.style.width = (800 * scale) + 'px';
+            canvas.style.height = (600 * scale) + 'px';
+            
+            // Maintain crisp pixel art
+            ctx.imageSmoothingEnabled = false;
+        }
+        
+        // Scale on load and resize
+        window.addEventListener('resize', scaleCanvas);
+        scaleCanvas();
+        
+        // Game state
+        let game = {
+            car: {
+                x: canvas.width / 2,
+                y: canvas.height - 100,
+                width: 45,
+                height: 85,
+                speed: 0,
+                maxSpeed: 10,
+                acceleration: 0.375,
+                friction: 0.15,
+                angle: 0,
+                fuel: 100,
+                maxFuel: 100,
+                engineHeat: 0
+            },
+            obstacles: [],
+            pickups: [],
+            particles: [],
+            tireTracks: [],
+            score: 0,
+            time: 0,
+            gameSpeed: 2,
+            keys: {},
+            lastObstacleSpawn: 0,
+            lastPickupSpawn: 0,
+            backgroundOffset: 0
+        };
+        
+        // Particle system for visual effects
+        function createParticle(x, y, type = 'dust') {
+            const particle = {
+                x: x + Math.random() * 20 - 10,
+                y: y + Math.random() * 10 - 5,
+                vx: Math.random() * 4 - 2,
+                vy: Math.random() * 2 + 1,
+                life: 30 + Math.random() * 20,
+                maxLife: 30 + Math.random() * 20,
+                size: Math.random() * 3 + 1,
+                type: type
+            };
+            game.particles.push(particle);
+        }
+        
+        // Create ambient desert atmosphere
+        function createAmbientParticles() {
+            // Floating sand particles
+            if (Math.random() < 0.3) {
+                const sandParticle = {
+                    x: Math.random() * canvas.width,
+                    y: canvas.height * 0.5 + Math.random() * canvas.height * 0.3,
+                    vx: -0.5 + Math.random() * 1,
+                    vy: -0.2 + Math.random() * 0.4,
+                    life: 120 + Math.random() * 60,
+                    maxLife: 120 + Math.random() * 60,
+                    size: 0.5 + Math.random() * 1.5,
+                    type: 'sand'
+                };
+                game.particles.push(sandParticle);
+            }
+            
+            // Heat shimmer particles (when hot)
+            if (game.car.engineHeat > 20 && Math.random() < 0.2) {
+                const heatParticle = {
+                    x: Math.random() * canvas.width,
+                    y: canvas.height * 0.7 + Math.random() * canvas.height * 0.3,
+                    vx: Math.random() * 2 - 1,
+                    vy: -0.5 - Math.random() * 0.5,
+                    life: 60 + Math.random() * 30,
+                    maxLife: 60 + Math.random() * 30,
+                    size: 1 + Math.random() * 2,
+                    type: 'heat'
+                };
+                game.particles.push(heatParticle);
+            }
+        }
+        
+        // Tire tracks system for visual feedback
+        function createTireTrack() {
+            // Only create tracks when car is moving
+            if (Math.abs(game.car.speed) > 0.5) {
+                const carCenterX = game.car.x + game.car.width / 2;
+                const carRearY = game.car.y + game.car.height - 10;
+                const wheelOffset = game.car.width / 2 - 5;
+                
+                // Add track segments for both rear wheels
+                game.tireTracks.push({
+                    x: carCenterX - wheelOffset,
+                    y: carRearY,
+                    width: 6,
+                    life: 120,
+                    maxLife: 120,
+                    isBraking: game.keys.ArrowDown || game.keys.s
+                });
+                game.tireTracks.push({
+                    x: carCenterX + wheelOffset - 6,
+                    y: carRearY,
+                    width: 6,
+                    life: 120,
+                    maxLife: 120,
+                    isBraking: game.keys.ArrowDown || game.keys.s
+                });
+            }
+            
+            // Limit tire tracks to prevent memory issues
+            if (game.tireTracks.length > 200) {
+                game.tireTracks = game.tireTracks.slice(-150);
+            }
+        }
+        
+        function updateTireTracks() {
+            // Move tracks down with the road and fade them
+            for (let i = game.tireTracks.length - 1; i >= 0; i--) {
+                game.tireTracks[i].y += game.gameSpeed;
+                game.tireTracks[i].life--;
+                
+                // Remove expired or off-screen tracks
+                if (game.tireTracks[i].life <= 0 || game.tireTracks[i].y > canvas.height + 20) {
+                    game.tireTracks.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawTireTracks() {
+            for (const track of game.tireTracks) {
+                const alpha = (track.life / track.maxLife) * 0.4;
+                ctx.fillStyle = track.isBraking 
+                    ? `rgba(30, 30, 30, ${alpha * 1.5})` // Darker brake marks
+                    : `rgba(60, 50, 40, ${alpha})`; // Regular tire marks
+                ctx.fillRect(track.x, track.y, track.width, 8);
+            }
+        }
+        
+        // Game state
+        let gameState = 'playing'; // 'playing' or 'gameOver'
+        
+        // Restart function
+        function restartGame() {
+            game.car = {
+                x: canvas.width / 2,
+                y: canvas.height - 100,
+                width: 45,
+                height: 85,
+                speed: 0,
+                maxSpeed: 10,
+                acceleration: 0.375,
+                friction: 0.15,
+                angle: 0,
+                fuel: 100,
+                maxFuel: 100,
+                engineHeat: 0
+            };
+            game.obstacles = [];
+            game.pickups = [];
+            game.particles = [];
+            game.tireTracks = [];
+            game.score = 0;
+            game.time = 0;
+            game.gameSpeed = 2;
+            game.backgroundOffset = 0;
+            gameState = 'playing';
+        }
+        
+        // Score management with name entry
+        function saveScore() {
+            // Always show name entry for global leaderboard
+            showNameEntry(game.score, Math.floor(game.time));
+        }
+        
+        function showNameEntry(finalScore, timeSeconds) {
+            // Create name entry overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'nameEntryOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            overlay.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #FF6B35, #FF8C42);
+                    padding: 30px;
+                    border-radius: 20px;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    max-width: 400px;
+                    width: 90%;
+                ">
+                    <h2 style="margin: 0 0 10px 0; font-size: 24px;">🏆 GAME OVER! 🏆</h2>
+                    <p style="margin: 0 0 20px 0; font-size: 16px;">Score: ${finalScore} | Time: ${timeSeconds}s</p>
+                    <p style="margin: 0 0 15px 0; font-size: 14px;">Enter your name for the leaderboard:</p>
+                    <input type="text" id="playerNameInput" maxlength="15" placeholder="Your Name" style="
+                        width: 80%;
+                        padding: 12px;
+                        font-size: 16px;
+                        border: none;
+                        border-radius: 8px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        font-family: 'Courier New', monospace;
+                        font-weight: bold;
+                    " />
+                    <br>
+                    <button onclick="submitScore()" style="
+                        background: #FFD700;
+                        color: #000;
+                        border: none;
+                        padding: 12px 30px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        margin-right: 10px;
+                        font-family: 'Courier New', monospace;
+                    ">SAVE SCORE</button>
+                    <button onclick="skipScore()" style="
+                        background: rgba(255,255,255,0.2);
+                        color: white;
+                        border: 1px solid white;
+                        padding: 12px 20px;
+                        font-size: 14px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-family: 'Courier New', monospace;
+                    ">Skip</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            document.getElementById('playerNameInput').focus();
+            
+            // Handle Enter key
+            document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitScore();
+                }
+            });
+        }
+        
+        function submitScore() {
+            const nameInput = document.getElementById('playerNameInput');
+            let playerName = nameInput.value.trim() || 'Anonymous';
+            
+            // Clean up name (remove special characters, limit length)
+            playerName = playerName.replace(/[^a-zA-Z0-9\s]/g, '').substring(0, 15) || 'Anonymous';
+            
+            // Save to localStorage
+            localStorage.setItem('porsche911PlayerName', playerName);
+            
+            const scores = JSON.parse(localStorage.getItem('porsche911Scores') || '[]');
+            const newScore = {
+                name: playerName,
+                score: game.score,
+                time: Math.floor(game.time),
+                date: Date.now()
+            };
+            
+            scores.push(newScore);
+            scores.sort((a, b) => b.score - a.score);
+            if (scores.length > 50) scores.splice(50);
+            localStorage.setItem('porsche911Scores', JSON.stringify(scores));
+            
+            // Submit to global leaderboard API
+            submitToGlobalLeaderboard(playerName, game.score, Math.floor(game.time));
+            
+            // Remove overlay
+            document.body.removeChild(document.getElementById('nameEntryOverlay'));
+        }
+        
+        // Global Leaderboard API functions (uses GET to bypass Cloudflare)
+        function submitToGlobalLeaderboard(playerName, score, timeSurvived) {
+            // Use image beacon - bypasses Cloudflare challenge
+            const img = new Image();
+            const params = `name=${encodeURIComponent(playerName)}&score=${score}&time=${timeSurvived}`;
+            img.src = `/api/submit?${params}&_t=${Date.now()}`;
+            console.log('Score submitted to global leaderboard');
+        }
+        
+        function fetchGlobalLeaderboard() {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = '/api/leaderboard.js?t=' + Date.now();
+                script.onload = () => resolve(window.LEADERBOARD_DATA || []);
+                script.onerror = () => resolve([]);
+                document.head.appendChild(script);
+            });
+        }
+        
+        async function showLeaderboard() {
+            const leaderboard = await fetchGlobalLeaderboard();
+            
+            const overlay = document.createElement('div');
+            overlay.id = 'leaderboardOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            let leaderboardHTML = '';
+            if (leaderboard.length === 0) {
+                leaderboardHTML = '<p style="color: #aaa;">No scores yet. Be the first!</p>';
+            } else {
+                leaderboard.forEach((entry, index) => {
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+                    const date = new Date(entry.created_at).toLocaleDateString();
+                    leaderboardHTML += `
+                        <div style="
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 8px 15px;
+                            margin: 4px 0;
+                            background: ${index < 3 ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.1)'};
+                            border-radius: 8px;
+                            align-items: center;
+                        ">
+                            <span style="width: 40px; font-size: 18px;">${medal}</span>
+                            <span style="flex: 1; font-weight: bold;">${entry.player_name}</span>
+                            <span style="width: 80px; text-align: right; color: #FFD700;">${entry.score}</span>
+                            <span style="width: 60px; text-align: right; color: #aaa; font-size: 12px;">${entry.time_survived}s</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            overlay.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #1a1a2e, #16213e);
+                    padding: 25px;
+                    border-radius: 20px;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    max-width: 450px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 2px solid #FFD700;
+                ">
+                    <h2 style="margin: 0 0 20px 0; font-size: 28px; color: #FFD700;">🏆 GLOBAL TOP 10 🏆</h2>
+                    <div style="text-align: left;">
+                        ${leaderboardHTML}
+                    </div>
+                    <button onclick="document.body.removeChild(document.getElementById('leaderboardOverlay'))" style="
+                        background: linear-gradient(45deg, #FF6B35, #FF8C42);
+                        color: white;
+                        border: none;
+                        padding: 12px 30px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        margin-top: 20px;
+                        font-family: 'Courier New', monospace;
+                    ">CLOSE</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Close on escape key
+            const closeHandler = (e) => {
+                if (e.key === 'Escape') {
+                    const ol = document.getElementById('leaderboardOverlay');
+                    if (ol) document.body.removeChild(ol);
+                    document.removeEventListener('keydown', closeHandler);
+                }
+            };
+            document.addEventListener('keydown', closeHandler);
+        }
+        
+        function skipScore() {
+            // Save with default name
+            const playerName = localStorage.getItem('porsche911PlayerName') || 'Anonymous';
+            const scores = JSON.parse(localStorage.getItem('porsche911Scores') || '[]');
+            const newScore = {
+                name: playerName,
+                score: game.score,
+                time: Math.floor(game.time),
+                date: Date.now()
+            };
+            
+            scores.push(newScore);
+            scores.sort((a, b) => b.score - a.score);
+            if (scores.length > 50) scores.splice(50);
+            localStorage.setItem('porsche911Scores', JSON.stringify(scores));
+            
+            // Submit to global leaderboard API
+            submitToGlobalLeaderboard(playerName, game.score, Math.floor(game.time));
+            
+            // Remove overlay
+            document.body.removeChild(document.getElementById('nameEntryOverlay'));
+        }
+        
+        function checkHighScore(currentScore) {
+            const scores = JSON.parse(localStorage.getItem('porsche911Scores') || '[]');
+            if (scores.length === 0) return true; // First score is always high score
+            
+            scores.sort((a, b) => b.score - a.score);
+            return currentScore > (scores[0]?.score || 0);
+        }
+        
+        function goToHomepage() {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+        
+        // Input handling
+        document.addEventListener('keydown', (e) => {
+            if (gameState === 'gameOver') {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    restartGame();
+                    return;
+                } else if (e.code === 'KeyH') {
+                    e.preventDefault();
+                    goToHomepage();
+                    return;
+                }
+            }
+            game.keys[e.code] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            game.keys[e.code] = false;
+        });
+        
+        // Mobile touch controls
+        let touchStart = null;
+        let touchControls = {
+            left: false,
+            right: false,
+            up: false,
+            down: false
+        };
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (gameState === 'gameOver') {
+                restartGame();
+                return;
+            }
+            
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            touchStart = {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!touchStart || gameState === 'gameOver') return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const currentTouch = {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+            
+            const deltaX = currentTouch.x - touchStart.x;
+            const deltaY = currentTouch.y - touchStart.y;
+            
+            // Reset touch controls
+            touchControls.left = false;
+            touchControls.right = false;
+            touchControls.up = false;
+            touchControls.down = false;
+            
+            // Determine direction based on swipe
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal movement
+                if (deltaX > 20) touchControls.right = true;
+                if (deltaX < -20) touchControls.left = true;
+            } else {
+                // Vertical movement
+                if (deltaY < -20) touchControls.up = true;
+                if (deltaY > 20) touchControls.down = true;
+            }
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            touchStart = null;
+            touchControls.left = false;
+            touchControls.right = false;
+            touchControls.up = false;
+            touchControls.down = false;
+        });
+        
+        // Enhanced obstacle spawning
+        function spawnObstacle() {
+            if (Date.now() - game.lastObstacleSpawn > Math.max(800, 1500 - game.time * 2)) {
+                const obstacleTypes = [
+                    { emoji: '🌵', size: 35, danger: 1 },
+                    { emoji: '🪨', size: 30, danger: 1 },
+                    { emoji: '🦂', size: 25, danger: 2 },
+                    { emoji: '💀', size: 28, danger: 3 },
+                    { emoji: '🛢️', size: 32, danger: 1 },
+                    { emoji: '🐍', size: 40, danger: 2 }
+                ];
+                const obstacle = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                game.obstacles.push({
+                    x: Math.random() * (canvas.width - obstacle.size),
+                    y: -obstacle.size,
+                    width: obstacle.size,
+                    height: obstacle.size,
+                    type: obstacle.emoji,
+                    danger: obstacle.danger
+                });
+                game.lastObstacleSpawn = Date.now();
+            }
+        }
+        
+        function spawnPickup() {
+            if (Date.now() - game.lastPickupSpawn > 2500) {
+                const pickupTypes = [
+                    { type: '⛽', effect: 'fuel', value: 35, rarity: 0.4 },
+                    { type: '💰', effect: 'score', value: 150, rarity: 0.3 },
+                    { type: '⚡', effect: 'boost', value: 2, rarity: 0.2 },
+                    { type: '🛡️', effect: 'shield', value: 1, rarity: 0.1 }
+                ];
+                
+                const random = Math.random();
+                let pickup = pickupTypes[0]; // default to fuel
+                for (const p of pickupTypes) {
+                    if (random < p.rarity) {
+                        pickup = p;
+                        break;
+                    }
+                }
+                
+                game.pickups.push({
+                    x: Math.random() * (canvas.width - 30),
+                    y: -30,
+                    width: 30,
+                    height: 30,
+                    ...pickup,
+                    glow: 0
+                });
+                game.lastPickupSpawn = Date.now();
+            }
+        }
+        
+        function updateCar() {
+            // Only allow movement if there's fuel
+            if (game.car.fuel > 0) {
+                // Handle input with improved physics (keyboard + touch)
+                if (game.keys['ArrowLeft'] || game.keys['KeyA'] || touchControls.left) {
+                    game.car.x -= 6;
+                    game.car.fuel -= 0.03;
+                    createParticle(game.car.x + game.car.width, game.car.y + game.car.height - 10, 'dust');
+                }
+                if (game.keys['ArrowRight'] || game.keys['KeyD'] || touchControls.right) {
+                    game.car.x += 6;
+                    game.car.fuel -= 0.03;
+                    createParticle(game.car.x, game.car.y + game.car.height - 10, 'dust');
+                }
+                if (game.keys['ArrowUp'] || game.keys['KeyW'] || touchControls.up) {
+                    game.car.speed = Math.min(game.car.speed + game.car.acceleration, game.car.maxSpeed);
+                    game.car.fuel -= 0.15;
+                    game.car.engineHeat += 0.1;
+                    // Exhaust particles
+                    createParticle(game.car.x + game.car.width/2, game.car.y + game.car.height, 'exhaust');
+                } else if (game.keys['ArrowDown'] || game.keys['KeyS'] || touchControls.down) {
+                    game.car.speed = Math.max(game.car.speed - game.car.acceleration, -game.car.maxSpeed / 2);
+                    game.car.fuel -= 0.08;
+                    // Brake dust
+                    createParticle(game.car.x + game.car.width/2, game.car.y + game.car.height, 'brake');
+                } else {
+                    game.car.speed *= (1 - game.car.friction);
+                }
+                
+                // Fuel consumption based on speed and heat
+                game.car.fuel -= game.car.speed * 0.025;
+                if (game.car.engineHeat > 50) {
+                    game.car.fuel -= 0.05; // Overheated engine uses more fuel
+                }
+            } else {
+                // No fuel - car slows down
+                game.car.speed *= 0.92;
+            }
+            
+            // Cool down engine gradually
+            game.car.engineHeat = Math.max(0, game.car.engineHeat - 0.2);
+            
+            // Keep car on screen
+            game.car.x = Math.max(0, Math.min(canvas.width - game.car.width, game.car.x));
+            
+            // Ensure fuel doesn't go negative
+            game.car.fuel = Math.max(0, game.car.fuel);
+            
+            // Update score based on speed and time survived
+            game.score += Math.floor(game.car.speed * 1.5);
+        }
+        
+        function updateParticles() {
+            for (let i = game.particles.length - 1; i >= 0; i--) {
+                const p = game.particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                p.size *= 0.98;
+                
+                if (p.life <= 0 || p.size < 0.5) {
+                    game.particles.splice(i, 1);
+                }
+            }
+        }
+        
+        function updatePickups() {
+            for (let i = game.pickups.length - 1; i >= 0; i--) {
+                game.pickups[i].y += game.gameSpeed + 1;
+                game.pickups[i].glow += 0.2; // For glow animation
+                
+                // Remove pickups that are off screen
+                if (game.pickups[i].y > canvas.height) {
+                    game.pickups.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with car
+                if (game.pickups[i].x < game.car.x + game.car.width &&
+                    game.pickups[i].x + game.pickups[i].width > game.car.x &&
+                    game.pickups[i].y < game.car.y + game.car.height &&
+                    game.pickups[i].y + game.pickups[i].height > game.car.y) {
+                    
+                    const pickup = game.pickups[i];
+                    
+                    // Create collection effect
+                    for (let j = 0; j < 8; j++) {
+                        createParticle(pickup.x, pickup.y, 'sparkle');
+                    }
+                    
+                    // Apply pickup effect
+                    switch (pickup.effect) {
+                        case 'fuel':
+                            game.car.fuel = Math.min(game.car.maxFuel, game.car.fuel + pickup.value);
+                            break;
+                        case 'score':
+                            game.score += pickup.value;
+                            break;
+                        case 'boost':
+                            game.car.maxSpeed = Math.min(15, game.car.maxSpeed + pickup.value);
+                            setTimeout(() => {
+                                game.car.maxSpeed = 10;
+                            }, 3000);
+                            break;
+                    }
+                    
+                    game.pickups.splice(i, 1);
+                }
+            }
+        }
+        
+        function updateObstacles() {
+            for (let i = game.obstacles.length - 1; i >= 0; i--) {
+                game.obstacles[i].y += game.gameSpeed + game.car.speed * 0.5;
+                
+                // Remove obstacles that are off screen
+                if (game.obstacles[i].y > canvas.height) {
+                    game.obstacles.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with car
+                if (game.obstacles[i].x < game.car.x + game.car.width &&
+                    game.obstacles[i].x + game.obstacles[i].width > game.car.x &&
+                    game.obstacles[i].y < game.car.y + game.car.height &&
+                    game.obstacles[i].y + game.obstacles[i].height > game.car.y) {
+                    
+                    // Create crash effect
+                    for (let j = 0; j < 15; j++) {
+                        createParticle(game.car.x + game.car.width/2, game.car.y + game.car.height/2, 'explosion');
+                    }
+                    
+                    // Damage based on obstacle danger level
+                    const damage = game.obstacles[i].danger * 15;
+                    game.car.fuel -= damage;
+                    game.car.speed *= 0.3; // Slow down on impact
+                    game.car.engineHeat += 20; // Increase heat from damage
+                    
+                    game.obstacles.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawBackground() {
+            // Animated desert background with parallax layers
+            game.backgroundOffset += game.gameSpeed * 0.5;
+            
+            // === DYNAMIC SKY ===
+            
+            // Sky gradient with time-of-day effect
+            const timeOffset = (game.score / 1000) % 1;
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.5);
+            
+            if (timeOffset < 0.5) {
+                // Day time
+                skyGradient.addColorStop(0, '#87CEEB');
+                skyGradient.addColorStop(0.6, '#FFB366');
+                skyGradient.addColorStop(1, '#DEB887');
+            } else {
+                // Sunset/dusk
+                skyGradient.addColorStop(0, '#FF4500');
+                skyGradient.addColorStop(0.3, '#FF6347');
+                skyGradient.addColorStop(0.7, '#FFB347');
+                skyGradient.addColorStop(1, '#DEB887');
+            }
+            
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height * 0.5);
+            
+            // === DISTANT MOUNTAINS (PARALLAX LAYER 1) ===
+            
+            ctx.save();
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = '#8B4513';
+            
+            const mountainSpeed = game.backgroundOffset * 0.1;
+            for (let i = 0; i < 6; i++) {
+                const x = (i * 150 - mountainSpeed) % (canvas.width + 150) - 150;
+                const height = 60 + Math.sin(i * 0.5) * 20;
+                
+                ctx.beginPath();
+                ctx.moveTo(x, canvas.height * 0.4);
+                ctx.lineTo(x + 50, canvas.height * 0.4 - height);
+                ctx.lineTo(x + 100, canvas.height * 0.4 - height + 15);
+                ctx.lineTo(x + 150, canvas.height * 0.4);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.restore();
+            
+            // === SAND DUNES (PARALLAX LAYER 2) ===
+            
+            ctx.save();
+            ctx.globalAlpha = 0.6;
+            const duneSpeed = game.backgroundOffset * 0.3;
+            
+            for (let i = 0; i < 4; i++) {
+                const x = (i * 200 - duneSpeed) % (canvas.width + 200) - 200;
+                
+                ctx.fillStyle = '#D2B48C';
+                ctx.beginPath();
+                ctx.ellipse(x + 100, canvas.height * 0.6, 120, 40, 0, 0, Math.PI);
+                ctx.fill();
+                
+                // Dune shadows
+                ctx.fillStyle = '#C19A6B';
+                ctx.beginPath();
+                ctx.ellipse(x + 140, canvas.height * 0.6, 80, 25, 0, 0, Math.PI);
+                ctx.fill();
+            }
+            ctx.restore();
+            
+            // === DESERT FLOOR WITH TEXTURE ===
+            
+            const desertGradient = ctx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
+            desertGradient.addColorStop(0, '#DEB887');
+            desertGradient.addColorStop(0.3, '#D2B48C');
+            desertGradient.addColorStop(0.7, '#C19A6B');
+            desertGradient.addColorStop(1, '#8B7355');
+            ctx.fillStyle = desertGradient;
+            ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.5);
+            
+            // Sand texture patterns
+            ctx.save();
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = '#A0522D';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i < 8; i++) {
+                const x = (i * 80 - game.backgroundOffset) % (canvas.width + 80) - 80;
+                ctx.beginPath();
+                ctx.moveTo(x, canvas.height * 0.6);
+                ctx.quadraticCurveTo(x + 40, canvas.height * 0.65, x + 80, canvas.height * 0.6);
+                ctx.stroke();
+            }
+            ctx.restore();
+            
+            // === HEAT SHIMMER EFFECT ===
+            
+            if (game.score > 500) {
+                ctx.save();
+                ctx.globalAlpha = 0.1;
+                const shimmerOffset = Math.sin(Date.now() * 0.01) * 2;
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                for (let y = canvas.height * 0.7; y < canvas.height; y += 20) {
+                    const waveX = Math.sin((y + Date.now() * 0.005)) * shimmerOffset;
+                    ctx.fillRect(waveX, y, canvas.width, 2);
+                }
+                ctx.restore();
+            }
+            
+            // === IMPROVED ROAD ===
+            
+            // Road base
+            const roadY = canvas.height * 0.75;
+            const roadHeight = canvas.height * 0.25;
+            
+            // Road gradient for depth
+            const roadGradient = ctx.createLinearGradient(0, roadY, 0, canvas.height);
+            roadGradient.addColorStop(0, '#2F2F2F');
+            roadGradient.addColorStop(0.5, '#1C1C1C');
+            roadGradient.addColorStop(1, '#000000');
+            ctx.fillStyle = roadGradient;
+            ctx.fillRect(0, roadY, canvas.width, roadHeight);
+            
+            // Road edges
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, roadY, canvas.width, 3);
+            ctx.fillRect(0, canvas.height - 3, canvas.width, 3);
+            
+            // Road lanes with enhanced visibility
+            ctx.lineWidth = 4;
+            ctx.setLineDash([25, 15]);
+            ctx.lineDashOffset = -game.backgroundOffset;
+            
+            for (let lane = 1; lane < 4; lane++) {
+                const x = canvas.width / 4 * lane;
+                
+                // Draw black outline for contrast
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+                
+                // Draw bright yellow lane
+                ctx.strokeStyle = '#FFFF00';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        }
+        
+        function drawCar() {
+            ctx.save();
+            ctx.translate(game.car.x + game.car.width/2, game.car.y + game.car.height/2);
+            
+            // Car shadow for depth
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(-game.car.width/2 + 2, -game.car.height/2 + 2, game.car.width, game.car.height);
+            
+            // Car outline for visibility
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(-game.car.width/2 - 1, -game.car.height/2 - 1, game.car.width + 2, game.car.height + 2);
+            
+            // Car body (Porsche 911 style)
+            ctx.fillStyle = '#DC143C'; // Racing red
+            ctx.fillRect(-game.car.width/2, -game.car.height/2, game.car.width, game.car.height);
+            
+            // Car details
+            ctx.fillStyle = '#8B0000'; // Darker red for shading
+            ctx.fillRect(-game.car.width/2, -game.car.height/2, game.car.width, 10); // Roof
+            ctx.fillRect(-game.car.width/2, game.car.height/2 - 10, game.car.width, 10); // Rear
+            
+            // Windshield
+            ctx.fillStyle = '#4169E1';
+            ctx.fillRect(-game.car.width/2 + 5, -game.car.height/2 + 10, game.car.width - 10, 15);
+            
+            // Windshield reflection
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(-game.car.width/2 + 7, -game.car.height/2 + 12, game.car.width - 14, 6);
+            
+            // Wheels with outline
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(-game.car.width/2 - 4, -game.car.height/2 + 14, 10, 14); // Front left
+            ctx.fillRect(game.car.width/2 - 6, -game.car.height/2 + 14, 10, 14); // Front right
+            ctx.fillRect(-game.car.width/2 - 4, game.car.height/2 - 28, 10, 14); // Rear left
+            ctx.fillRect(game.car.width/2 - 6, game.car.height/2 - 28, 10, 14); // Rear right
+            
+            ctx.fillStyle = '#2F4F4F';
+            ctx.fillRect(-game.car.width/2 - 3, -game.car.height/2 + 15, 8, 12); // Front left
+            ctx.fillRect(game.car.width/2 - 5, -game.car.height/2 + 15, 8, 12); // Front right
+            ctx.fillRect(-game.car.width/2 - 3, game.car.height/2 - 27, 8, 12); // Rear left
+            ctx.fillRect(game.car.width/2 - 5, game.car.height/2 - 27, 8, 12); // Rear right
+            
+            // Headlights with glow
+            ctx.shadowColor = '#FFFFE0';
+            ctx.shadowBlur = 8;
+            ctx.fillStyle = '#FFFFE0';
+            ctx.fillRect(-game.car.width/2 + 8, -game.car.height/2, 8, 4);
+            ctx.fillRect(game.car.width/2 - 16, -game.car.height/2, 8, 4);
+            ctx.shadowBlur = 0;
+            
+            // Engine heat effect
+            if (game.car.engineHeat > 30) {
+                ctx.fillStyle = `rgba(255, 0, 0, ${(game.car.engineHeat - 30) / 70})`;
+                ctx.fillRect(-game.car.width/2, -game.car.height/2, game.car.width, game.car.height);
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawParticles() {
+            for (const particle of game.particles) {
+                const alpha = particle.life / particle.maxLife;
+                ctx.save();
+                
+                switch (particle.type) {
+                    case 'dust':
+                        // Enhanced dust with glow
+                        ctx.shadowColor = 'rgba(222, 184, 135, 0.5)';
+                        ctx.shadowBlur = particle.size * 2;
+                        ctx.fillStyle = `rgba(222, 184, 135, ${alpha * 0.8})`;
+                        break;
+                    case 'exhaust':
+                        // Realistic exhaust smoke
+                        ctx.shadowColor = 'rgba(105, 105, 105, 0.3)';
+                        ctx.shadowBlur = particle.size * 3;
+                        ctx.fillStyle = `rgba(105, 105, 105, ${alpha * 0.9})`;
+                        break;
+                    case 'brake':
+                        // Sparking brake dust
+                        ctx.shadowColor = 'rgba(255, 69, 0, 0.8)';
+                        ctx.shadowBlur = particle.size * 4;
+                        ctx.fillStyle = `rgba(255, 69, 0, ${alpha})`;
+                        break;
+                    case 'explosion':
+                        // Explosive fire effect
+                        ctx.shadowColor = 'rgba(255, 165, 0, 0.9)';
+                        ctx.shadowBlur = particle.size * 5;
+                        ctx.fillStyle = `rgba(255, ${165 - (1-alpha) * 100}, 0, ${alpha})`;
+                        break;
+                    case 'sparkle':
+                        // Glittering sparkles
+                        ctx.shadowColor = 'rgba(255, 255, 0, 1)';
+                        ctx.shadowBlur = particle.size * 6;
+                        ctx.fillStyle = `rgba(255, 255, ${100 + alpha * 155}, ${alpha})`;
+                        break;
+                    case 'sand':
+                        // Ambient floating sand
+                        ctx.fillStyle = `rgba(194, 154, 107, ${alpha * 0.4})`;
+                        break;
+                    case 'heat':
+                        // Heat distortion particles
+                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.2})`;
+                        break;
+                }
+                
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        
+        function drawObstacles() {
+            for (const obstacle of game.obstacles) {
+                // Draw background circle for better visibility
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.beginPath();
+                ctx.arc(obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2, obstacle.width/2 + 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw white border
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw the obstacle emoji with high contrast
+                ctx.font = `${obstacle.width}px Arial`;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(obstacle.type, obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2);
+                
+                // Add danger glow effect
+                if (obstacle.danger > 1) {
+                    ctx.shadowColor = '#FF0000';
+                    ctx.shadowBlur = 15;
+                    ctx.fillStyle = '#FFFF00';
+                    ctx.fillText(obstacle.type, obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2);
+                    ctx.shadowBlur = 0;
+                }
+                
+                ctx.restore();
+            }
+        }
+        
+        function drawPickups() {
+            for (const pickup of game.pickups) {
+                // Animated glow effect
+                const glowIntensity = Math.sin(pickup.glow) * 0.5 + 0.5;
+                
+                ctx.save();
+                
+                // Draw background circle with animated glow
+                ctx.fillStyle = `rgba(255, 215, 0, ${0.3 + glowIntensity * 0.4})`;
+                ctx.beginPath();
+                ctx.arc(pickup.x + pickup.width/2, pickup.y + pickup.height/2, pickup.width/2 + 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw glowing border
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 3;
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = 10 * glowIntensity;
+                ctx.stroke();
+                
+                // Draw the pickup emoji with high contrast
+                ctx.font = `${pickup.width}px Arial`;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 3;
+                ctx.fillText(pickup.type, pickup.x + pickup.width/2, pickup.y + pickup.height/2);
+                
+                // Add extra glow to the emoji
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = 8 * glowIntensity;
+                ctx.fillStyle = '#FFFF00';
+                ctx.fillText(pickup.type, pickup.x + pickup.width/2, pickup.y + pickup.height/2);
+                
+                ctx.restore();
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('speed').textContent = Math.floor(game.car.speed * 12);
+            document.getElementById('score').textContent = game.score;
+            document.getElementById('time').textContent = Math.floor(game.time / 60);
+            document.getElementById('fuel').textContent = Math.floor(game.car.fuel);
+            
+            // Update fuel bar
+            const fuelBar = document.getElementById('fuelBar');
+            const fuelPercent = (game.car.fuel / game.car.maxFuel) * 100;
+            fuelBar.style.width = fuelPercent + '%';
+            
+            // Change fuel bar color based on level
+            if (fuelPercent > 50) {
+                fuelBar.style.background = 'linear-gradient(90deg, #ffff00, #00ff00)';
+            } else if (fuelPercent > 20) {
+                fuelBar.style.background = 'linear-gradient(90deg, #ff8800, #ffff00)';
+            } else {
+                fuelBar.style.background = '#ff0000';
+            }
+        }
+        
+        function gameLoop() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background regardless of game state
+            drawBackground();
+            
+            if (gameState === 'playing') {
+                // Update game state
+                updateCar();
+                updateObstacles();
+                updatePickups();
+                updateParticles();
+                updateTireTracks();
+                
+                // Create tire tracks and ambient particles
+                createTireTrack();
+                createAmbientParticles();
+                
+                // Spawn new objects
+                spawnObstacle();
+                spawnPickup();
+                
+                // Update game time
+                game.time += 1/60;
+                
+                // Increase difficulty over time
+                game.gameSpeed = Math.min(6, 2 + game.time / 30);
+            } else {
+                // Still update particles for visual effects during game over
+                updateParticles();
+            }
+            
+            // Draw everything
+            drawTireTracks();
+            drawCar();
+            drawObstacles();
+            drawPickups();
+            drawParticles();
+            
+            // Update UI
+            updateUI();
+            
+            // Game over check
+            if (game.car.fuel <= 0 && game.car.speed < 0.1) {
+                if (gameState !== 'gameOver') {
+                    gameState = 'gameOver';
+                    saveScore(); // Save the score when game ends
+                }
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 48px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2 - 80);
+                
+                ctx.font = 'bold 24px Courier New';
+                ctx.fillText(`Final Score: ${game.score}`, canvas.width/2, canvas.height/2 - 30);
+                ctx.fillText(`Time Survived: ${Math.floor(game.time)}s`, canvas.width/2, canvas.height/2);
+                
+                // Check if it's a high score
+                const isHighScore = checkHighScore(game.score);
+                if (isHighScore) {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.fillText('🏆 NEW HIGH SCORE! 🏆', canvas.width/2, canvas.height/2 + 30);
+                }
+                
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 18px Courier New';
+                ctx.fillText('SPACE or TAP to restart', canvas.width/2, canvas.height/2 + 60);
+                ctx.fillText('H for Homepage', canvas.width/2, canvas.height/2 + 85);
+                
+                ctx.textAlign = 'start';
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Start the game
+        gameLoop();
+    </script>
+</body>
+</html>

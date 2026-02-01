@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Porsche 911 Desert Dash - Race Through the Desert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: 
+                radial-gradient(ellipse at top, rgba(255, 107, 53, 0.3) 0%, transparent 50%),
+                linear-gradient(180deg, #FF6B35 0%, #F7931E 15%, #FFE15D 40%, #DEB887 70%, #8B7355 100%);
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            animation: backgroundShimmer 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShimmer {
+            0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+            50% { filter: brightness(1.1) hue-rotate(5deg); }
+        }
+        
+        .hero-section {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .title {
+            font-size: clamp(32px, 8vw, 64px);
+            font-weight: bold;
+            background: linear-gradient(45deg, #FF6B35, #FFD700, #FF6B35);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: titleGlow 4s ease-in-out infinite, gradientShift 6s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: clamp(16px, 3vw, 24px);
+            color: #8B4513;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .car-graphic {
+            font-size: clamp(60px, 15vw, 120px);
+            margin: 20px 0;
+            animation: carBounce 3s ease-in-out infinite;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes carBounce {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 30px;
+            padding: 0 20px;
+            justify-content: center;
+        }
+        
+        .game-section, .leaderboard-section {
+            background: rgba(0,0,0,0.7);
+            border: 3px solid #FF6B35;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+        
+        .section-title {
+            font-size: clamp(24px, 5vw, 32px);
+            color: #FFD700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .play-button {
+            background: linear-gradient(45deg, #FF6B35, #FF8C42);
+            border: none;
+            color: white;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            padding: 20px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 20px 0;
+            animation: buttonPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes buttonPulse {
+            0%, 100% { box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6), 0 0 30px rgba(255, 107, 53, 0.3); }
+        }
+        
+        .play-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 107, 53, 0.6);
+            background: linear-gradient(45deg, #FF8C42, #FFB366);
+        }
+        
+        .play-button:active {
+            transform: translateY(1px);
+        }
+        
+        .game-features {
+            text-align: left;
+            margin: 20px 0;
+            color: #FFFFFF;
+        }
+        
+        .feature {
+            margin: 10px 0;
+            font-size: clamp(14px, 2.5vw, 16px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-icon {
+            font-size: 1.2em;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .leaderboard {
+            color: #FFFFFF;
+        }
+        
+        .score-entry {
+            background: rgba(255, 107, 53, 0.2);
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #FF6B35;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(14px, 2.5vw, 16px);
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: #FFD700;
+            font-size: 1.2em;
+        }
+        
+        .rank.first { color: #FFD700; }
+        .rank.second { color: #C0C0C0; }
+        .rank.third { color: #CD7F32; }
+        
+        .score-value {
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .no-scores {
+            color: #AAA;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px 20px;
+            color: #8B4513;
+            font-size: clamp(12px, 2vw, 14px);
+        }
+        
+        .footer a {
+            color: #FF6B35;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .footer a:hover {
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        .desert-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .cactus {
+            position: absolute;
+            font-size: clamp(30px, 6vw, 60px);
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .cactus:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .cactus:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
+        .cactus:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 4s; }
+        .cactus:nth-child(4) { top: 40%; right: 30%; animation-delay: 1s; }
+    </style>
+</head>
+<body>
+    <div class="desert-bg">
+        <div class="cactus">🌵</div>
+        <div class="cactus">🌵</div>
+        <div class="cactus">🌵</div>
+        <div class="cactus">🌵</div>
+    </div>
+
+    <div class="hero-section">
+        <h1 class="title">🏎️ PORSCHE 911 🏎️</h1>
+        <h2 class="title" style="margin-top: -10px;">DESERT DASH</h2>
+        <p class="subtitle">⚡ High-Speed Desert Racing Experience ⚡</p>
+        <div class="car-graphic">🏎️💨</div>
+    </div>
+
+    <div class="main-container">
+        <div class="game-section">
+            <h2 class="section-title">🎮 START YOUR ENGINE</h2>
+            <button class="play-button" onclick="startGame()">▶️ RACE NOW</button>
+            
+            <div class="game-features">
+                <div class="feature">
+                    <span class="feature-icon">🏎️</span>
+                    <span>Realistic Porsche 911 physics</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🏜️</span>
+                    <span>Dynamic desert environment</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">⛽</span>
+                    <span>Fuel management system</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">💨</span>
+                    <span>Particle effects & physics</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📱</span>
+                    <span>Mobile optimized controls</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🏆</span>
+                    <span>Competitive scoring system</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="leaderboard-section">
+            <h2 class="section-title">🏆 TOP DRIVERS</h2>
+            <div class="leaderboard" id="leaderboard">
+                <div class="no-scores">🏁 No races completed yet!<br>Be the first champion!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🎮 Open Source Racing Game | 
+        <a href="https://github.com/the911fund/porsche911-desert-dash" target="_blank">View Source on GitHub</a> | 
+        Daily improvements via automation ⚡</p>
+    </div>
+
+    <script>
+        // Load and display leaderboard
+        function loadLeaderboard() {
+            const scores = JSON.parse(localStorage.getItem('porsche911Scores') || '[]');
+            const leaderboard = document.getElementById('leaderboard');
+            
+            if (scores.length === 0) {
+                leaderboard.innerHTML = '<div class="no-scores">🏁 No races completed yet!<br>Be the first champion!</div>';
+                return;
+            }
+            
+            // Sort scores by score value (descending)
+            scores.sort((a, b) => b.score - a.score);
+            const topScores = scores.slice(0, 5);
+            
+            let html = '';
+            topScores.forEach((entry, index) => {
+                const rankClass = index === 0 ? 'first' : (index === 1 ? 'second' : (index === 2 ? 'third' : ''));
+                const rankEmoji = index === 0 ? '👑' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : '🏎️'));
+                
+                const date = new Date(entry.date).toLocaleDateString();
+                
+                html += `
+                    <div class="score-entry">
+                        <div>
+                            <span class="rank ${rankClass}">${rankEmoji} #${index + 1}</span>
+                            <span style="margin-left: 10px;">${entry.name || 'Anonymous'}</span>
+                            <div style="font-size: 0.8em; color: #AAA; margin-top: 2px;">${date}</div>
+                        </div>
+                        <div class="score-value">${entry.score.toLocaleString()}</div>
+                    </div>
+                `;
+            });
+            
+            leaderboard.innerHTML = html;
+        }
+        
+        function startGame() {
+            // Smooth transition to game
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 500);
+        }
+        
+        // Load leaderboard on page load
+        loadLeaderboard();
+        
+        // Add some random demo scores if none exist (for demo purposes)
+        if (!localStorage.getItem('porsche911Scores')) {
+            const demoScores = [
+                { name: 'SpeedDemon', score: 15420, date: Date.now() - 86400000 },
+                { name: 'DesertRacer', score: 12890, date: Date.now() - 172800000 },
+                { name: 'TurboDriver', score: 11250, date: Date.now() - 259200000 },
+                { name: 'RoadWarrior', score: 9875, date: Date.now() - 345600000 },
+                { name: 'NitroBoost', score: 8420, date: Date.now() - 432000000 }
+            ];
+            localStorage.setItem('porsche911Scores', JSON.stringify(demoScores));
+            loadLeaderboard();
+        }
+        
+        // Refresh leaderboard every 30 seconds in case someone else plays
+        setInterval(loadLeaderboard, 30000);
+        
+        // Add some visual flair
+        document.addEventListener('mousemove', (e) => {
+            const car = document.querySelector('.car-graphic');
+            const rect = car.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const deltaX = (e.clientX - centerX) * 0.01;
+            const deltaY = (e.clientY - centerY) * 0.01;
+            
+            car.style.transform = `translateY(-5px) rotateY(${deltaX}deg) rotateX(${-deltaY}deg)`;
+        });
+    </script>
+</body>
+</html>
